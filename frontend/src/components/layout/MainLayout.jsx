@@ -2,13 +2,7 @@ import React, { useState } from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 
-export default function MainLayout({ 
-  currentRole, 
-  onRoleChange, 
-  activeTab, 
-  onTabChange, 
-  children 
-}) {
+export default function MainLayout({ activeTab, onTabChange, children }) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const toggleSidebar = () => {
@@ -19,8 +13,6 @@ export default function MainLayout({
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       {/* Top Header */}
       <Header 
-        currentRole={currentRole}
-        onRoleChange={onRoleChange}
         isSidebarCollapsed={isSidebarCollapsed}
         onToggleSidebar={toggleSidebar}
       />
@@ -30,7 +22,6 @@ export default function MainLayout({
         <Sidebar 
           activeTab={activeTab}
           onTabChange={onTabChange}
-          currentRole={currentRole}
           isCollapsed={isSidebarCollapsed}
         />
 

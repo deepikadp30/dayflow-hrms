@@ -12,11 +12,11 @@ frontend/dist/
 
 # Environment variables & secrets
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
+!*/.env.example
 backend/.env
+frontend/.env
 
 # Python & Django
 __pycache__/

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { 
   Menu, 
   Search, 
@@ -6,15 +7,32 @@ import {
   Shield, 
   User, 
   Sparkles, 
-  ChevronDown 
+  ChevronDown,
+  LogOut
 } from 'lucide-react';
 
-export default function Header({ 
-  currentRole, 
-  onRoleChange, 
-  isSidebarCollapsed, 
-  onToggleSidebar 
-}) {
+export default function Header({ isSidebarCollapsed, onToggleSidebar }) {
+  const { user, logout } = useAuth();
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+  const getInitials = () => {
+    if (!user) return 'DF';
+    if (user.first_name && user.last_name) {
+      return `${user.first_name[0]}${user.last_name[0]}`.toUpperCase();
+    }
+    return user.username ? user.username.slice(0, 2).toUpperCase() : 'DF';
+  };
+
+  const displayName = () => {
+    if (!user) return 'User';
+    if (user.first_name || user.last_name) {
+      return `${user.first_name || ''} ${user.last_name || ''}`.trim();
+    }
+    return user.username;
+  };
+
+  const isAdmin = user?.role === 'ADMIN' || user?.is_admin_hr;
+
   return (
     <header className="sticky top-0 z-30 h-16 bg-slate-900/80 backdrop-blur-md border-b border-slate-800/80 px-4 flex items-center justify-between transition-all">
       {/* Left side: Menu toggle & Brand */}
@@ -49,7 +67,7 @@ export default function Header({
           <input
             type="text"
             readOnly
-            placeholder="Quick search & actions... (Ctrl + K preview)"
+            placeholder="Quick search & actions..."
             className="w-full bg-slate-950/60 border border-slate-800 rounded-xl pl-9 pr-12 py-1.5 text-xs text-slate-300 placeholder-slate-500 focus:outline-none cursor-pointer hover:border-slate-700 transition-colors"
           />
           <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-slate-800 rounded border border-slate-700">
@@ -58,58 +76,74 @@ export default function Header({
         </div>
       </div>
 
-      {/* Right side: Role Switcher & User Avatar */}
+      {/* Right side: Authenticated User Badge & Menu */}
       <div className="flex items-center space-x-3">
-        {/* Role Switcher Toggle */}
-        <div className="flex items-center bg-slate-950/80 p-1 rounded-xl border border-slate-800">
-          <button
-            onClick={() => onRoleChange('employee')}
-            className={`px-3 py-1 text-xs font-medium rounded-lg transition-all flex items-center space-x-1.5 ${
-              currentRole === 'employee'
-                ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <User className="w-3.5 h-3.5" />
-            <span>Employee</span>
-          </button>
-          
-          <button
-            onClick={() => onRoleChange('admin')}
-            className={`px-3 py-1 text-xs font-medium rounded-lg transition-all flex items-center space-x-1.5 ${
-              currentRole === 'admin'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Shield className="w-3.5 h-3.5" />
-            <span>Admin / HR</span>
-          </button>
+        {/* Role Badge Indicator */}
+        <div className={`px-2.5 py-1 rounded-lg border text-xs font-semibold flex items-center space-x-1.5 ${
+          isAdmin
+            ? 'bg-indigo-500/10 border-indigo-500/30 text-indigo-400'
+            : 'bg-brand-500/10 border-brand-500/30 text-brand-400'
+        }`}>
+          {isAdmin ? <Shield className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
+          <span>{isAdmin ? 'Admin / HR' : 'Employee'}</span>
         </div>
 
-        {/* Notification Bell Icon */}
+        {/* Notifications Icon */}
         <button 
           className="relative p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors"
           title="Notifications"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand-500"></span>
         </button>
 
-        {/* User Profile */}
-        <div className="flex items-center space-x-2.5 pl-2 border-l border-slate-800">
-          <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-medium text-xs text-slate-200">
-            {currentRole === 'admin' ? 'SJ' : 'AM'}
-          </div>
-          <div className="hidden lg:block text-left">
-            <p className="text-xs font-semibold text-white leading-tight">
-              {currentRole === 'admin' ? 'Sarah Jenkins' : 'Alex Morgan'}
-            </p>
-            <p className="text-[10px] text-slate-400 leading-tight">
-              {currentRole === 'admin' ? 'HR Director' : 'Senior Developer'}
-            </p>
-          </div>
-          <ChevronDown className="w-3.5 h-3.5 text-slate-500 hidden sm:block" />
+        {/* User Profile Dropdown */}
+        <div className="relative border-l border-slate-800 pl-3">
+          <button
+            onClick={() => setShowProfileMenu(prev => !prev)}
+            className="flex items-center space-x-2.5 p-1 rounded-xl hover:bg-slate-800/50 transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-slate-800 to-slate-700 border border-slate-700 flex items-center justify-center font-bold text-xs text-brand-400">
+              {getInitials()}
+            </div>
+            <div className="hidden lg:block text-left">
+              <p className="text-xs font-semibold text-white leading-tight">
+                {displayName()}
+              </p>
+              <p className="text-[10px] text-slate-400 leading-tight">
+                {user?.department || (isAdmin ? 'HR Administration' : 'Team Member')}
+              </p>
+            </div>
+            <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+          </button>
+
+          {/* Profile Dropdown Menu */}
+          {showProfileMenu && (
+            <div className="absolute right-0 mt-2 w-56 bg-slate-900 border border-slate-800 rounded-2xl shadow-xl py-2 z-50">
+              <div className="px-4 py-2 border-b border-slate-800/80">
+                <p className="text-xs font-bold text-white">{displayName()}</p>
+                <p className="text-[10px] text-slate-400 truncate">{user?.email}</p>
+                {user?.employee_id && (
+                  <span className="inline-block mt-1 text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">
+                    ID: {user.employee_id}
+                  </span>
+                )}
+              </div>
+
+              <div className="pt-1">
+                <button
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    logout();
+                  }}
+                  className="w-full text-left px-4 py-2 text-xs text-rose-400 hover:bg-rose-500/10 transition-colors flex items-center space-x-2"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Log Out</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

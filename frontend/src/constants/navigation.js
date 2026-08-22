@@ -5,8 +5,6 @@ import {
   CalendarDays, 
   CreditCard, 
   Settings, 
-  Sliders,
-  ShieldCheck,
   Building2
 } from 'lucide-react';
 
@@ -43,14 +41,14 @@ export const NAVIGATION_ITEMS = [
     id: 'payroll',
     label: 'Payroll & Compensation',
     icon: CreditCard,
-    roles: ['admin'],
+    roles: ['ADMIN'],
     description: 'Salary structures, payslips, and compliance'
   },
   {
     id: 'organization',
     label: 'Organization',
     icon: Building2,
-    roles: ['admin'],
+    roles: ['ADMIN'],
     description: 'Departments, designations, and team structures'
   },
   {

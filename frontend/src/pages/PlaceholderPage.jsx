@@ -1,10 +1,14 @@
 import React from 'react';
 import { NAVIGATION_ITEMS } from '../constants/navigation';
+import { useAuth } from '../context/AuthContext';
 import { Sparkles, Layers, ShieldCheck, ArrowRight } from 'lucide-react';
 
-export default function PlaceholderPage({ activeTab, currentRole }) {
+export default function PlaceholderPage({ activeTab }) {
+  const { user } = useAuth();
   const activeNav = NAVIGATION_ITEMS.find(item => item.id === activeTab) || NAVIGATION_ITEMS[0];
   const Icon = activeNav.icon;
+
+  const isAdmin = user?.role === 'ADMIN' || user?.is_admin_hr;
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
@@ -18,7 +22,7 @@ export default function PlaceholderPage({ activeTab, currentRole }) {
             <div className="flex items-center space-x-2">
               <h1 className="text-xl font-bold text-white tracking-tight">{activeNav.label}</h1>
               <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
-                Phase 1 Shell
+                Phase 3 Authenticated
               </span>
             </div>
             <p className="text-xs text-slate-400 mt-1">{activeNav.description}</p>
@@ -27,11 +31,11 @@ export default function PlaceholderPage({ activeTab, currentRole }) {
 
         {/* Current Active Role Badge */}
         <div className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
-          <span className="text-slate-400">Active View Context:</span>
+          <span className="text-slate-400">Authenticated Role:</span>
           <span className={`font-semibold px-2 py-0.5 rounded text-[11px] ${
-            currentRole === 'admin' ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30' : 'bg-brand-500/20 text-brand-400 border border-brand-500/30'
+            isAdmin ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30' : 'bg-brand-500/20 text-brand-400 border border-brand-500/30'
           }`}>
-            {currentRole === 'admin' ? 'Admin / HR Mode' : 'Employee Mode'}
+            {isAdmin ? 'ADMIN / HR' : 'EMPLOYEE'}
           </span>
         </div>
       </div>
@@ -51,7 +55,7 @@ export default function PlaceholderPage({ activeTab, currentRole }) {
               {activeNav.label} Feature Module
             </h2>
             <p className="text-xs text-slate-400 leading-relaxed">
-              This navigation view is wired into Dayflow's role-aware layout. Full interactive features for <strong className="text-slate-300">{activeNav.label}</strong> will be incrementally enabled in upcoming development phases.
+              Authenticated as <strong className="text-slate-200">{user?.username}</strong>. Full interactive features for <strong className="text-slate-300">{activeNav.label}</strong> will be incrementally enabled in upcoming phases.
             </p>
           </div>
 
@@ -64,7 +68,7 @@ export default function PlaceholderPage({ activeTab, currentRole }) {
             <div className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-slate-950/60 border border-slate-800">
               <div className="flex items-center space-x-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span className="text-slate-200">Phase 1: Foundation & Layout Shell</span>
+                <span className="text-slate-200">Phase 3: DRF JWT Auth & Role Access</span>
               </div>
               <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
                 ACTIVE
@@ -74,7 +78,7 @@ export default function PlaceholderPage({ activeTab, currentRole }) {
             <div className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-slate-950/40 border border-slate-800/60 text-slate-400">
               <div className="flex items-center space-x-2">
                 <Sparkles className="w-4 h-4 text-slate-500" />
-                <span>Phase 2: Smart Quick Actions & Dashboards</span>
+                <span>Phase 4: Smart Quick Actions & Dashboards</span>
               </div>
               <span className="text-[10px] font-medium text-slate-500">UPCOMING</span>
             </div>
@@ -82,7 +86,7 @@ export default function PlaceholderPage({ activeTab, currentRole }) {
             <div className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-slate-950/40 border border-slate-800/60 text-slate-400">
               <div className="flex items-center space-x-2">
                 <ArrowRight className="w-4 h-4 text-slate-500" />
-                <span>Phase 3: Smart Employee Snapshot & Analytics</span>
+                <span>Phase 5: Smart Employee Snapshot & Analytics</span>
               </div>
               <span className="text-[10px] font-medium text-slate-500">UPCOMING</span>
             </div>

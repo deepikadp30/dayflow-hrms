@@ -1,16 +1,17 @@
 import React from 'react';
 import { NAVIGATION_ITEMS } from '../../constants/navigation';
+import { useAuth } from '../../context/AuthContext';
 import { Shield, UserCheck, ChevronRight } from 'lucide-react';
 
-export default function Sidebar({ 
-  activeTab, 
-  onTabChange, 
-  currentRole, 
-  isCollapsed 
-}) {
-  // Filter navigation items based on current role
+export default function Sidebar({ activeTab, onTabChange, isCollapsed }) {
+  const { user } = useAuth();
+
+  const userRole = user?.role || 'EMPLOYEE';
+  const isAdmin = userRole === 'ADMIN' || user?.is_admin_hr;
+
+  // Filter navigation items based on actual authenticated backend role
   const filteredNavItems = NAVIGATION_ITEMS.filter(item => 
-    item.roles.includes('all') || item.roles.includes(currentRole)
+    item.roles.includes('all') || item.roles.includes(userRole)
   );
 
   return (
@@ -22,7 +23,7 @@ export default function Sidebar({
       {/* Navigation list */}
       <div className="py-4 px-2 space-y-1 overflow-y-auto flex-1">
         <div className={`px-3 py-1.5 text-[10px] uppercase font-bold text-slate-500 tracking-wider ${isCollapsed ? 'sr-only' : 'block'}`}>
-          Navigation ({currentRole === 'admin' ? 'HR Mode' : 'Employee Mode'})
+          Navigation ({isAdmin ? 'Admin View' : 'Employee View'})
         </div>
 
         {filteredNavItems.map((item) => {
@@ -68,18 +69,18 @@ export default function Sidebar({
           isCollapsed ? 'justify-center' : 'space-x-3'
         }`}>
           <div className={`p-1.5 rounded-lg ${
-            currentRole === 'admin' ? 'bg-indigo-500/20 text-indigo-400' : 'bg-brand-500/20 text-brand-400'
+            isAdmin ? 'bg-indigo-500/20 text-indigo-400' : 'bg-brand-500/20 text-brand-400'
           }`}>
-            {currentRole === 'admin' ? <Shield className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
+            {isAdmin ? <Shield className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
           </div>
           
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
               <p className="text-[11px] font-semibold text-slate-200 truncate">
-                {currentRole === 'admin' ? 'Administrator' : 'Employee Access'}
+                {isAdmin ? 'Administrator' : 'Employee Access'}
               </p>
               <p className="text-[10px] text-slate-500 truncate">
-                Dayflow v0.1 Phase 1
+                Connected to DRF API
               </p>
             </div>
           )}
