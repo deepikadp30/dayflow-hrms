@@ -80,7 +80,7 @@ if USE_SQLITE_FALLBACK and os.getenv('DB_ENGINE', '').endswith('mysql'):
     DATABASES = {
         'default': {
             'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.mysql'),
-            'NAME': os.getenv('DB_NAME', 'dayflow_db'),
+            'NAME': os.getenv('DB_NAME', 'dayflow_hrms'),
             'USER': os.getenv('DB_USER', 'root'),
             'PASSWORD': os.getenv('DB_PASSWORD', ''),
             'HOST': os.getenv('DB_HOST', '127.0.0.1'),
@@ -113,7 +113,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.mysql'),
-            'NAME': os.getenv('DB_NAME', 'dayflow_db'),
+            'NAME': os.getenv('DB_NAME', 'dayflow_hrms'),
             'USER': os.getenv('DB_USER', 'root'),
             'PASSWORD': os.getenv('DB_PASSWORD', ''),
             'HOST': os.getenv('DB_HOST', '127.0.0.1'),
