@@ -7,6 +7,8 @@ import RegisterPage from './pages/RegisterPage';
 import EmployeeDirectoryPage from './pages/EmployeeDirectoryPage';
 import EmployeeDetailPage from './pages/EmployeeDetailPage';
 import MyProfilePage from './pages/MyProfilePage';
+import AttendancePage from './pages/AttendancePage';
+import LeaveManagementPage from './pages/LeaveManagementPage';
 import { Loader2, Sparkles } from 'lucide-react';
 
 function AppContent() {
@@ -44,7 +46,7 @@ function AppContent() {
     );
   }
 
-  // Determine active view content
+  // Determine active view content based on activeTab
   const renderContent = () => {
     if (activeTab === 'directory') {
       if (selectedEmployeeId) {
@@ -64,6 +66,14 @@ function AppContent() {
 
     if (activeTab === 'profile') {
       return <MyProfilePage />;
+    }
+
+    if (activeTab === 'attendance') {
+      return <AttendancePage />;
+    }
+
+    if (activeTab === 'leave') {
+      return <LeaveManagementPage />;
     }
 
     return <PlaceholderPage activeTab={activeTab} />;
