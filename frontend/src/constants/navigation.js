@@ -1,6 +1,7 @@
 import { 
   LayoutDashboard, 
   Users, 
+  User,
   Clock, 
   CalendarDays, 
   CreditCard, 
@@ -22,6 +23,13 @@ export const NAVIGATION_ITEMS = [
     icon: Users,
     roles: ['all'],
     description: 'Workforce list and employee details'
+  },
+  {
+    id: 'profile',
+    label: 'My Profile',
+    icon: User,
+    roles: ['all'],
+    description: 'View and manage personal profile record'
   },
   {
     id: 'attendance',

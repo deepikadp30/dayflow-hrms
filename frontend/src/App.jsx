@@ -4,12 +4,21 @@ import MainLayout from './components/layout/MainLayout';
 import PlaceholderPage from './pages/PlaceholderPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import EmployeeDirectoryPage from './pages/EmployeeDirectoryPage';
+import EmployeeDetailPage from './pages/EmployeeDetailPage';
+import MyProfilePage from './pages/MyProfilePage';
 import { Loader2, Sparkles } from 'lucide-react';
 
 function AppContent() {
   const { isAuthenticated, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [isRegisterView, setIsRegisterView] = useState(false);
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    setSelectedEmployeeId(null);
+  };
 
   // Show loading indicator during initial auth check
   if (loading) {
@@ -35,10 +44,35 @@ function AppContent() {
     );
   }
 
+  // Determine active view content
+  const renderContent = () => {
+    if (activeTab === 'directory') {
+      if (selectedEmployeeId) {
+        return (
+          <EmployeeDetailPage 
+            employeeId={selectedEmployeeId} 
+            onBack={() => setSelectedEmployeeId(null)} 
+          />
+        );
+      }
+      return (
+        <EmployeeDirectoryPage 
+          onSelectEmployee={(id) => setSelectedEmployeeId(id)} 
+        />
+      );
+    }
+
+    if (activeTab === 'profile') {
+      return <MyProfilePage />;
+    }
+
+    return <PlaceholderPage activeTab={activeTab} />;
+  };
+
   // Render Protected Application Layout when authenticated
   return (
-    <MainLayout activeTab={activeTab} onTabChange={setActiveTab}>
-      <PlaceholderPage activeTab={activeTab} />
+    <MainLayout activeTab={activeTab} onTabChange={handleTabChange}>
+      {renderContent()}
     </MainLayout>
   );
 }
