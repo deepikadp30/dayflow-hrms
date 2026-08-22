@@ -49,15 +49,15 @@ export const NAVIGATION_ITEMS = [
     id: 'payroll',
     label: 'Payroll & Compensation',
     icon: CreditCard,
-    roles: ['ADMIN'],
-    description: 'Salary structures, payslips, and compliance'
+    roles: ['all'],
+    description: 'Salary structures, payslips, and compensation'
   },
   {
     id: 'organization',
     label: 'Organization',
     icon: Building2,
-    roles: ['ADMIN'],
-    description: 'Departments, designations, and team structures'
+    roles: ['all'],
+    description: 'Company details, headquarters, and location'
   },
   {
     id: 'settings',

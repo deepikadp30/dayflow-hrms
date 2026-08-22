@@ -9,17 +9,23 @@ import EmployeeDetailPage from './pages/EmployeeDetailPage';
 import MyProfilePage from './pages/MyProfilePage';
 import AttendancePage from './pages/AttendancePage';
 import LeaveManagementPage from './pages/LeaveManagementPage';
+import PayrollPage from './pages/PayrollPage';
+import PayrollDetailPage from './pages/PayrollDetailPage';
+import OrganizationPage from './pages/OrganizationPage';
+import SettingsPage from './pages/SettingsPage';
 import { Loader2, Sparkles } from 'lucide-react';
 
 function AppContent() {
   const { isAuthenticated, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+  const [selectedPayrollId, setSelectedPayrollId] = useState(null);
   const [isRegisterView, setIsRegisterView] = useState(false);
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
     setSelectedEmployeeId(null);
+    setSelectedPayrollId(null);
   };
 
   // Show loading indicator during initial auth check
@@ -74,6 +80,30 @@ function AppContent() {
 
     if (activeTab === 'leave') {
       return <LeaveManagementPage />;
+    }
+
+    if (activeTab === 'payroll') {
+      if (selectedPayrollId) {
+        return (
+          <PayrollDetailPage 
+            payrollId={selectedPayrollId} 
+            onBack={() => setSelectedPayrollId(null)} 
+          />
+        );
+      }
+      return (
+        <PayrollPage 
+          onViewDetail={(id) => setSelectedPayrollId(id)} 
+        />
+      );
+    }
+
+    if (activeTab === 'organization') {
+      return <OrganizationPage />;
+    }
+
+    if (activeTab === 'settings') {
+      return <SettingsPage />;
     }
 
     return <PlaceholderPage activeTab={activeTab} />;
