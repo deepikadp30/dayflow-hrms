@@ -165,4 +165,10 @@ if cors_origins_env:
 else:
     CORS_ALLOW_ALL_ORIGINS = True
 
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        r"^http://(localhost|127\.0\.0\.1)(:\d+)?$",
+    ]
+
 CORS_ALLOW_CREDENTIALS = True

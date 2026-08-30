@@ -21,6 +21,7 @@ function AppContent() {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [selectedPayrollId, setSelectedPayrollId] = useState(null);
   const [isRegisterView, setIsRegisterView] = useState(false);
+  const [registeredUsername, setRegisteredUsername] = useState('');
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
@@ -46,9 +47,20 @@ function AppContent() {
   // Render Login or Register view if unauthenticated
   if (!isAuthenticated) {
     return isRegisterView ? (
-      <RegisterPage onSwitchToLogin={() => setIsRegisterView(false)} />
+      <RegisterPage 
+        onSwitchToLogin={(uname) => {
+          if (typeof uname === 'string') setRegisteredUsername(uname);
+          setIsRegisterView(false);
+        }} 
+      />
     ) : (
-      <LoginPage onSwitchToRegister={() => setIsRegisterView(true)} />
+      <LoginPage 
+        registeredUsername={registeredUsername}
+        onSwitchToRegister={() => {
+          setRegisteredUsername('');
+          setIsRegisterView(true);
+        }} 
+      />
     );
   }
 

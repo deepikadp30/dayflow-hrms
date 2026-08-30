@@ -30,6 +30,11 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs['password'] != attrs['password_confirm']:
             raise serializers.ValidationError({"password": "Password fields do not match."})
+        # Clean empty strings for optional fields so MySQL stores NULL instead of duplicate empty strings ''
+        if 'employee_id' in attrs and (attrs['employee_id'] == '' or attrs['employee_id'] is None):
+            attrs['employee_id'] = None
+        if 'department' in attrs and (attrs['department'] == '' or attrs['department'] is None):
+            attrs['department'] = None
         return attrs
 
     def create(self, validated_data):

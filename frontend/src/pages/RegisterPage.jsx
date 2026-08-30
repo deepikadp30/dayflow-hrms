@@ -34,6 +34,9 @@ export default function RegisterPage({ onSwitchToLogin }) {
     setErrorMessage('');
     try {
       await register(formData);
+      if (onSwitchToLogin) {
+        onSwitchToLogin(formData.username);
+      }
     } catch (err) {
       setErrorMessage(err.message || 'Registration failed.');
     } finally {

@@ -4,7 +4,14 @@ import { authApi } from '../api/authApi';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('dayflow_user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -16,10 +23,15 @@ export function AuthProvider({ children }) {
         try {
           const profile = await authApi.getProfile();
           setUser(profile);
+          localStorage.setItem('dayflow_user', JSON.stringify(profile));
         } catch (err) {
           console.error('Failed to load profile on mount:', err);
-          logout();
+          if (err.status === 401) {
+            logout();
+          }
         }
+      } else {
+        setUser(null);
       }
       setLoading(false);
     }
@@ -56,14 +68,9 @@ export function AuthProvider({ children }) {
     setError(null);
     setLoading(true);
     try {
-      await authApi.register(userData);
-      
-      // Automatically log in after registration
-      const loginData = await login({
-        username: userData.username,
-        password: userData.password,
-      });
-      return loginData;
+      const createdUser = await authApi.register(userData);
+      setLoading(false);
+      return createdUser;
     } catch (err) {
       setLoading(false);
       let errMsg = 'Registration failed.';

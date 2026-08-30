@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Sparkles, Lock, User, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 
-export default function LoginPage({ onSwitchToRegister }) {
+export default function LoginPage({ onSwitchToRegister, registeredUsername = '' }) {
   const { login } = useAuth();
-  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [formData, setFormData] = useState({ username: registeredUsername || '', password: '' });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [successNotice, setSuccessNotice] = useState(
+    registeredUsername ? 'Account created successfully! Please enter your password to sign in.' : ''
+  );
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (errorMessage) setErrorMessage('');
+    if (successNotice) setSuccessNotice('');
   };
 
   const handleSubmit = async (e) => {
@@ -48,6 +52,14 @@ export default function LoginPage({ onSwitchToRegister }) {
             <p className="text-xs text-slate-400 mt-1">Know what matters in seconds</p>
           </div>
         </div>
+
+        {/* Success Notice */}
+        {successNotice && (
+          <div className="mb-6 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center space-x-2.5">
+            <Sparkles className="w-4 h-4 flex-shrink-0" />
+            <span>{successNotice}</span>
+          </div>
+        )}
 
         {/* Error Alert */}
         {errorMessage && (
